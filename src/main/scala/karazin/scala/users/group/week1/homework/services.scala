@@ -3,8 +3,8 @@ package karazin.scala.users.group.week1.homework
 import java.util.UUID
 
 // Do not forget to import custom implementation
-import adt._
-import model._
+import karazin.scala.users.group.week1.homework.adt._
+import karazin.scala.users.group.week1.homework.model._
 
 /*
   Dummy services
@@ -12,9 +12,13 @@ import model._
   The services need to be implemented in case of running the code
  */
 object services:
-  
-  def getUserProfile(): ErrorOr[UserProfile] = ???
-  def getPosts(userId: UUID): ErrorOr[List[Post]] = ???
-  def getComments(postId: UUID): ErrorOr[List[Comment]] = ??? 
-  def getLikes(postId: UUID): ErrorOr[List[Like]] = ???
-  def getShares(postId: UUID): ErrorOr[List[Share]] = ???
+  val uuid = UUID.randomUUID
+
+  def getUserProfile(): ErrorOr[UserProfile] = ErrorOr(UserProfile(UUID.randomUUID))
+  def getPosts(userId: UUID): ErrorOr[List[Post]] = ErrorOr(List(Post(UUID.randomUUID, UUID.randomUUID),
+                                                                 Post(UUID.randomUUID, UUID.randomUUID)))
+  def getComments(postId: UUID): ErrorOr[List[Comment]] = ErrorOr(Nil)
+  def getLikes(postId: UUID): ErrorOr[List[Like]] = ErrorOr(List(Like(UUID.randomUUID, UUID.randomUUID),
+                                                                 Like(UUID.randomUUID, UUID.randomUUID)))
+  def getShares(postId: UUID): ErrorOr[List[Share]] = ErrorOr(Nil)
+
