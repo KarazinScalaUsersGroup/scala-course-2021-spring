@@ -12,24 +12,25 @@ package karazin.scala.users.group.week2.homework
 object adt:
   
   enum ErrorOr[+V]:
-    
-    // Added to make it compilable. Remove it.
-    case DummyCase
-    
     /* 
       Two case must be defined: 
       * a case for a regular value
       * a case for an error (it should contain an actual throwable)
      */
-  
+    case Some(x: V) extends ErrorOr[V]
+    case Failer(x: Throwable) extends ErrorOr[V]
+
     /* 
       The method is used for defining execution pipelines
       Provide a type parameter, an argument and a result type
       
       Make sure that in case of failing the method with exception
       no exception is thrown but the case for an error is returned
-    */ 
-    def flatMap = ???
+    */
+    def flatMap[Q](f: V ⇒ ErrorOr[Q]): ErrorOr[Q] = this match
+      case ErrorOr.Some(v) ⇒ try f(v) catch 
+        case e: Throwable ⇒ ErrorOr.Failer(e)
+      case ErrorOr.Failer(e) ⇒ ErrorOr.Failer(e)
 
     /* 
       The method is used for changing the internal object
@@ -38,8 +39,11 @@ object adt:
       Make sure that in case of failing the method with exception
       no exception is thrown but the case for an error is returned
      */
-    def map = ???
-  
+    def map[Q](f: V ⇒ Q): ErrorOr[Q] = this match
+        case ErrorOr.Some(v) ⇒ try ErrorOr(f(v)) catch
+          case e: Throwable ⇒ ErrorOr.Failer(e)
+        case ErrorOr.Failer(e) ⇒ ErrorOr.Failer(e)
+
     /* 
       The method is used for filtering
       Provide a type parameter, an argument and a result type
@@ -47,20 +51,28 @@ object adt:
       Make sure that in case of failing the method with exception
       no exception is thrown but the case for an error is returned
      */
-    def withFilter = ???
-  
+    def withFilter(p: V => Boolean): ErrorOr[V] = this match
+      case ErrorOr.Some(v) ⇒ 
+        try if p(v) then ErrorOr.Some(v) else ErrorOr.Failer(null)
+        catch case e: Throwable ⇒ ErrorOr.Failer(e)
+      case ErrorOr.Failer(e) ⇒ ErrorOr.Failer(e)
+    
     /* 
       The method is used for getting rid of internal box
       Provide a type parameter, an argument and a result type
     */
-    def flatten = ???
-    
+    def flatten[U](implicit ev: V <:< ErrorOr[U]): ErrorOr[U] = this match
+        case ErrorOr.Failer(e) ⇒ ErrorOr.Failer(e)
+        case ErrorOr.Some(v) ⇒ v
+
     /* 
       The method is used for applying side effects without returning any result
       Provide a type parameter, an argument and a result type
     */
-    def foreach = ???
-      
+    def foreach[U](f: V => U): Unit = this match
+      case ErrorOr.Some(v) ⇒ f(v)
+      case ErrorOr.Failer(e) ⇒ ()
+
   // Companion object to define constructor
   object ErrorOr:
     /* 
@@ -69,6 +81,8 @@ object adt:
       Make sure that in case of failing the method with exception
       no exception is thrown but the case for an error is returned
     */
-    def apply = ???
-      
+    def apply[V](v: V): ErrorOr[V] = v match
+      case v: Throwable ⇒ ErrorOr.Failer(v)
+      case _ ⇒ ErrorOr.Some(v)
+
   
