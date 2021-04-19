@@ -1,5 +1,9 @@
 package karazin.scala.users.group.week3.homework
 
+import karazin.scala.users.group.week3.homework.model.{Post, PostView}
+import karazin.scala.users.group.week3.homework.program.getPostView
+
+import java.util.UUID
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -11,10 +15,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
     • https://scalameta.org/munit/docs/assertions.html
  */
 
-class ProgramSuite extends munit.FunSuite:
-  
-  test("successful async test example") {
-    Future {
-      assertEquals(42, 42)
+class ProgramSuite extends munit.FunSuite :
+
+  test("getPostView") {
+    getPostView(Post(UUID.randomUUID, UUID.randomUUID)) map {
+      obj => assert(obj.isInstanceOf[PostView])
     }
   }
